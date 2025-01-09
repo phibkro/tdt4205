@@ -1,0 +1,8 @@
+*
+!*.c
+
+!.gitignore
+!README.md
+!learn/
+
+
