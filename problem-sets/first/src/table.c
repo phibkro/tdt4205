@@ -12,14 +12,30 @@
 // The state to jump to as soon as a line is invalid
 #define ERROR 13
 
+/* Additional macros */
+
+// State accepting labels
 #define LABEL 1
 
-// Main content, accept a repetition of statements
-#define BODY LABEL + 2 // 3
+// Main content, accept a repetition of statements, ending with an optional comment
+// = 3
+#define BODY (LABEL + 1 + 1)
 
-#define GO BODY + 2 // 4
+// Accept "go" keyword
+// = 4
+#define GO (BODY + 1) // 4
 
-#define DXY GO + 2 // 6
+// Accept d(x|y)=<number>
+// = 6
+#define DXY (GO + 1 + 1) // 6
+
+// Accept single line comments
+// = 10
+#define COMMENTS (DXY + 3 + 1) // 10
+
+// Logic for calculating state number
+// <current> = <previous> + <previous_max_length> + 1
+// <previous_max_length> is the max offset used within the procedure
 
 int table[NSTATES][256];
 
@@ -60,6 +76,7 @@ void fillTable()
             table[START]['g'] = GO;
             table[START]['d'] = DXY;
         }
+        table[START]['/'] = COMMENTS;
     }
 
     { /* BODY */
@@ -69,6 +86,7 @@ void fillTable()
         table[BODY]['d'] = DXY;
         // TODO: fix accepting empty label statement "40: "
         table[BODY]['\n'] = ACCEPT;
+        table[BODY]['/'] = COMMENTS;
 
         { /* BODY: GO */
 
@@ -96,5 +114,15 @@ void fillTable()
             // Loop
             table[DXY + 3][' '] = BODY;
         }
+    }
+
+    { /* COMMENTS */
+        table[COMMENTS]['/'] = COMMENTS + 1;
+        for (int i = 0; i < 256; i++)
+        {
+            table[COMMENTS + 1][i] = COMMENTS + 1;
+        }
+        table[COMMENTS + 1]['/'] = COMMENTS + 1;
+        table[COMMENTS + 1]['\n'] = ACCEPT;
     }
 }
