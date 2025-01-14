@@ -34,6 +34,7 @@ void fillTable() {
     table[1]['o'] = 2;
     table[2]['\n'] = ACCEPT;
 
+    // Accept repeated "go"s with spaces e.g "go go go" but not "gogogo"
     table[2][' '] = START;
 
     // TODO Expand the table to pass (and fail) the described syntax
