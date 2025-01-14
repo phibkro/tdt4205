@@ -64,8 +64,11 @@ void fillTable()
 
     { /* BODY */
 
+        table[BODY][' '] = BODY;
         table[BODY]['g'] = GO;
         table[BODY]['d'] = DXY;
+        // TODO: fix accepting empty label statement "40: "
+        table[BODY]['\n'] = ACCEPT;
 
         { /* BODY: GO */
 
