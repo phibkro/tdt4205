@@ -37,7 +37,21 @@ void fillTable() {
     // Accept repeated "go"s with spaces e.g "go go go" but not "gogogo"
     table[2][' '] = START;
 
-    // TODO Expand the table to pass (and fail) the described syntax
-    // table[...][...] = ...
+    // Accept "d(x|y)=<number>" with leading zeros (007)
+    // Regex approximately d(x|y)=-?(0-9)+
+    table[START]['d'] = 3;
+    table[3]['x'] = 4;
+    table[3]['y'] = 4;
+    table[4]['='] = 5;
+    table[5]['-'] = 6;
+    for (char c = '0'; c <= '9'; c++)
+    {
+        table[5][c] = 6;
+        table[6][c] = 6;
+    }
+    table[6]['\n'] = ACCEPT;
+    // Loop
+    table[6][' '] = START;
+    
 
 }
