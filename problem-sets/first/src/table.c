@@ -12,8 +12,10 @@
 // The state to jump to as soon as a line is invalid
 #define ERROR 13
 
+#define LABEL 1
+
 // Main content, accept a repetition of statements
-#define BODY START + 2 // 3
+#define BODY LABEL + 2 // 3
 
 #define GO BODY + 2 // 4
 
@@ -40,6 +42,18 @@ void fillTable()
 
         // If we reach a newline, and are not in the middle of a statement, accept
         table[START]['\n'] = ACCEPT;
+
+        { /* START: LABEL */
+
+            // Regex approx. `^(0-9)+: ((d(x|y)=-?(0-9)+)|go( go)*)+`
+            for (char c = '0'; c <= '9'; c++)
+            {
+                table[START][c] = LABEL;
+                table[LABEL][c] = LABEL;
+            }
+            table[LABEL][':'] = LABEL + 1;
+            table[LABEL + 1][' '] = BODY;
+        }
 
         { /* START: STATEMENTS */
 
